@@ -1,23 +1,23 @@
 ﻿using ExternalApiTesting.Models;
 using ExternalApiTesting.Repositories.Contracts;
+using System.Net.Http;
 using System.Text.Json;
 
 namespace ExternalApiTesting.Repositories
 {
-    public class HolidayApiService : IHolidaysApiService
+    public class CountriesApiService : ICountriesApiService
     {
         private readonly HttpClient httpClient;
 
-        public HolidayApiService(IHttpClientFactory httpClientFactory)
+        public CountriesApiService(IHttpClientFactory httpClientFactory)
         {
             httpClient = httpClientFactory.CreateClient("PublicHolidaysApi");
         }
 
-        public async Task<List<HolidayModel>> GetHolidays(string countryCode, int year)
+        public async Task<CountryInfoModel> GetCountryInfos(string countryCode)
         {
-            var url = string.Format("/api/v3/PublicHolidays/{0}/{1}", year, countryCode);
-
-            var result = new List<HolidayModel>();
+            var url = string.Format("/api/v3/CountryInfo/{0}", countryCode);
+            var result = new CountryInfoModel();
 
             var response = await httpClient.GetAsync(url);
 
@@ -25,11 +25,11 @@ namespace ExternalApiTesting.Repositories
             {
                 var stringResponse = await response.Content.ReadAsStringAsync();
 
-                result = JsonSerializer.Deserialize<List<HolidayModel>>(stringResponse,
-                            new JsonSerializerOptions()
-                            {
-                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                            });
+                result = JsonSerializer.Deserialize<CountryInfoModel>(stringResponse,
+                          new JsonSerializerOptions()
+                          {
+                              PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                          });
             }
             else
             {

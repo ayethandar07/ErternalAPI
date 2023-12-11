@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IHolidaysApiService, HolidayApiService>();
+builder.Services.AddSingleton<ICountriesApiService, CountriesApiService>();
 
 builder.Services.AddHttpClient("PublicHolidaysApi", c => c.BaseAddress = new Uri("https://date.nager.at"));
 

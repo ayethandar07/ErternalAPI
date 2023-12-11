@@ -7,37 +7,34 @@ namespace ExternalApiTesting.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HolidayController : ControllerBase
+    public class CountryController : ControllerBase
     {
-        private readonly IHolidaysApiService _holidaysApiService;
+        private readonly ICountriesApiService _countriesApiService;
 
-        public HolidayController(IHolidaysApiService holidaysApiService)
+        public CountryController(ICountriesApiService countriesApiService)
         {
-            _holidaysApiService = holidaysApiService;
+            _countriesApiService = countriesApiService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string countryCode, int year)
+        public async Task<IActionResult> GetCountroInfo(string countryCode)
         {
             try
             {
-                List<HolidayModel> holidays = new List<HolidayModel>();
+                CountryInfoModel countryInfos = new CountryInfoModel();
 
-                if (!string.IsNullOrEmpty(countryCode) && year > 0)
+                if (!string.IsNullOrEmpty(countryCode))
                 {
-                    holidays = await _holidaysApiService.GetHolidays(countryCode, year);
+                    countryInfos = await _countriesApiService.GetCountryInfos(countryCode);
                 }
 
-                return Ok(holidays);
-
+                return Ok(countryInfos);
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                                "Error retrieving data from the server");
             }
-            
         }
-
     }
 }
