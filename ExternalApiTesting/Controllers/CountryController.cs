@@ -36,5 +36,23 @@ namespace ExternalApiTesting.Controllers
                                "Error retrieving data from the server");
             }
         }
+
+        [HttpGet("AvailableCountries")]
+        public async Task<IActionResult> GetCountries()
+        {
+            try
+            {
+                List<Country> countries = new List<Country>();
+
+                countries = await _countriesApiService.AvailableCountries();
+
+                return Ok(countries);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                               "Error retrieving data from the server");
+            }
+        }
     }
 }
