@@ -13,6 +13,32 @@ namespace ExternalApiTesting.Repositories
             httpClient = httpClientFactory.CreateClient("PublicHolidaysApi");
         }
 
+        public async Task<CountryInfoModel> GetCountryInfos(string countryCode)
+        {
+            var url = string.Format("/api/v3/CountryInfo/{0}", countryCode);
+
+            var result = new CountryInfoModel();
+
+            var response = await httpClient.GetAsync(url);
+
+            if ( response.IsSuccessStatusCode )
+            {
+                var stringResponse = await response.Content.ReadAsStringAsync();
+
+                result = JsonSerializer.Deserialize<CountryInfoModel>(stringResponse,
+                          new JsonSerializerOptions()
+                          {
+                              PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                          });
+            }
+            else
+            {
+                throw new HttpRequestException(response.ReasonPhrase);
+            }
+
+            return result;
+        }
+
         public async Task<List<HolidayModel>> GetHolidays(string countryCode, int year)
         {
             var url = string.Format("/api/v3/PublicHolidays/{0}/{1}", year, countryCode);

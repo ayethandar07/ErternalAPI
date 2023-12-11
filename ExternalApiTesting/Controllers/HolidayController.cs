@@ -38,5 +38,26 @@ namespace ExternalApiTesting.Controllers
             }
             
         }
+
+        [HttpGet("CountryInfo")]
+        public async Task<IActionResult> GetCountroInfo(string countryCode)
+        {
+            try
+            {
+                CountryInfoModel countryInfos = new CountryInfoModel();
+
+                if (!string.IsNullOrEmpty(countryCode))
+                {
+                    countryInfos = await _holidaysApiService.GetCountryInfos(countryCode);
+                }
+
+                return Ok(countryInfos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                               "Error retrieving data from the server");
+            }
+        }
     }
 }
